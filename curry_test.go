@@ -18,8 +18,8 @@ func TestFunc(t *testing.T) {
 	curry := gofun.NewCurry(crossMultiply)
 
 	t.Run("partial apply works", func(t *testing.T) {
-		partial := curry.Input(c)
-		partial = partial.Input(b, a)
+		partial := curry.Input(a)
+		partial = partial.Input(b, c)
 		out := partial.Out()
 
 		assert.Equal(t, float64(42), out)

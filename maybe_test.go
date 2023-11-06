@@ -22,7 +22,7 @@ func TestMaybe(t *testing.T) {
 	//upper := func(value string) string { return strings.ToUpper(value) }
 	//dup := func(value string) string { return strings.Repeat(value, 2) }
 	//ComposeMaybe[string](maybe("some error", upper), dup)("hi")
-	withdraw := func(amount, account int) gofun.Maybe[int] {
+	withdraw := func(account, amount int) gofun.Maybe[int] {
 		if account >= amount {
 			return gofun.NewMaybe(account - amount)
 		}

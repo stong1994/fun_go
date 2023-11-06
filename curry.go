@@ -16,13 +16,13 @@ func NewCurry(fn any) Curry {
 	if c.fn.Kind() != reflect.Func {
 		panic("fn must be a function")
 	}
-	c.nextIdx = c.fn.Type().NumIn() - 1
-	c.inputs = make([]reflect.Value, c.fn.Type().NumIn(), c.nextIdx+1)
+	c.nextIdx = 0
+	c.inputs = make([]reflect.Value, c.fn.Type().NumIn(), c.fn.Type().NumIn())
 	return c
 }
 
 func (c Curry) Out() any {
-	if c.nextIdx != -1 {
+	if c.nextIdx != c.fn.Type().NumIn() {
 		panic("not enough params")
 	}
 	return c.fn.Call(c.inputs)[0].Interface()
@@ -42,7 +42,7 @@ func (c Curry) Input(partialArgs ...any) Curry {
 	curry := c.copy()
 	for i := 0; i < len(partialArgs); i++ {
 		curry.inputs[curry.nextIdx] = reflect.ValueOf(partialArgs[i])
-		curry.nextIdx--
+		curry.nextIdx++
 	}
 	return curry
 }
