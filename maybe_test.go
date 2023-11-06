@@ -28,11 +28,13 @@ func TestMaybe(t *testing.T) {
 		}
 		return gofun.InvalidMaybe(0)
 	}
-	withdrawCurry := func(account int) func(amount int) gofun.Maybe[int] {
-		return func(amount int) gofun.Maybe[int] {
-			return withdraw(amount, account)
-		}
-	}
+
+	withdrawCurry := gofun.NewCurry(withdraw)
+	//withdrawCurry := func(account int) func(amount int) gofun.Maybe[int] {
+	//	return func(amount int) gofun.Maybe[int] {
+	//		return withdraw(amount, account)
+	//	}
+	//}
 
 	finishTransaction := func(rst gofun.Maybe[int]) string {
 		if rst.IsNothing() {
@@ -41,7 +43,7 @@ func TestMaybe(t *testing.T) {
 		return fmt.Sprintf("balance is %d", rst.Value())
 	}
 	getBalance := gofun.MapMaybeElse("you are broke", finishTransaction)
-	getTwenty := gofun.UnsafeCompose(getBalance, withdrawCurry(200))
+	getTwenty := gofun.UnsafeCompose(getBalance, withdrawCurry.Input(200))
 	assert.Equal(t, "balance is 180", getTwenty(20))
 	assert.Equal(t, "balance is 180", getTwenty(20))
 	assert.Equal(t, "you are broke", getTwenty(220))
